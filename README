@@ -1,0 +1,6 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3359
+
+Use the g@ operator or the :Figlet command to filter your text through figlet, in-place!
+:Figlet has a completion function that will complete on installed font names, too.
+
+Plus, there is a Windows/MS-DOS version of Figlet, so everybody can get in on the fun!
