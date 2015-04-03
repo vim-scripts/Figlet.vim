@@ -481,16 +481,8 @@ function! FigRange(...) range "{{{
 		undo
 		echoerr "Figlet failed to render this text"
 	endtry
-	
-	"undo the Figlet text replacement in one move instead of two
-	undojoin
-	
-	" the append function appends below the cursor line;
-	" so we need to rewind the line by one
-	call append(pos[1]  - 1, figletText)
-	
-	"restore cursor position
-	call setpos('.', pos)
+
+	call FigAppend(pos, figletText)
 endfunction "}}}
 
 command! -range -complete=custom,FigletComplete -nargs=* Figlet :<line1>,<line2>call FigRange(<f-args>)
@@ -528,20 +520,31 @@ function! FigOper(motionType) "{{{
 		undo
 		echoerr "Figlet failed to render this text"
 	endtry
-	
-	"undo the Figlet text replacement in one move instead of two
-	undojoin
-	
-	" the append function appends below the cursor line;
-	" so we need to rewind the line by one
-	call append(pos[1]  - 1, figletText)
-	
-	"restore cursor position
-	call setpos('.', pos)
+
+	call FigAppend(pos, figletText)
 endfunction "}}}
 
 set operatorfunc=FigOper
 
+
+" The guts of appending Figlet text into the buffer.
+function! FigAppend(pos, figletText) "{{{
+	" undo the Figlet text replacement in one move instead of two
+	undojoin
+
+	" the append function appends below the cursor line;
+	" so we need to rewind the line by one
+	call append(a:pos[1] - 1, a:figletText)
+
+	" mark appended Figlet text boundaries with `[ and `] markers
+	execute 'normal! '. (a:pos[1]) .'G'
+	normal! 0m[
+	execute 'normal! '. (len(a:figletText) - 1) .'j'
+	normal! m]
+
+	" restore cursor position
+	call setpos('.', a:pos)
+endfunction "}}}
 
 " 8""""                            8""""                 
 " 8     eeeee eeeee   eeeee eeee   8     e  e     eeee   
